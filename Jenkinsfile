@@ -13,8 +13,8 @@ pipeline {
           def tfOutput = readJSON file: "${env.HOME}/tf-output.json"
 
           def varsContent = """
-          RDS_HOSTNAME: "${tfOutput['mysql-endpoint'].value.split(":")[0]}"
-          RDS_PORT: "${tfOutput['mysql-endpoint'].value.split(":")[1]}"
+          RDS_HOSTNAME: "${tfOutput['mysql-endpoint'].value.split(':')[0]}"
+          RDS_PORT: "${tfOutput['mysql-endpoint'].value.split(':')[1]}"
           RDS_USERNAME: "${env.DB_USERNAME}"
           RDS_PASSWORD: "${env.DB_PASSWORD}"
           REDIS_HOSTNAME: "${tfOutput['redis-endpoint'].value[0].address}"
@@ -24,16 +24,14 @@ pipeline {
           writeFile file: "ansible/Deploy_app/vars/main.yml", text: varsContent
         }
       }
-       post {
-                
-                success {
-                    slackSend channel: '#jenkins-pipelines' ,color: "good", message: "✅ *Parseing Terraform Output Successfully*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                }
-
-                failure {
-                    slackSend channel: '#jenkins-pipelines' ,color: "danger", message: "❌ *Parseing Terraform Output failed*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                }
-            }
+      post {
+        success {
+          slackSend channel: '#jenkins-pipelines', color: "good", message: "✅ *Parsing Terraform Output Successfully*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        }
+        failure {
+          slackSend channel: '#jenkins-pipelines', color: "danger", message: "❌ *Parsing Terraform Output failed*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        }
+      }
     }
 
     stage('Build and Push Docker Image') {
@@ -47,34 +45,30 @@ pipeline {
           '''
         }
       }
-       post {
-                
-                success {
-                    slackSend channel: '#jenkins-pipelines' ,color: "good", message: "✅ *Building and Pushing Docker Image Successfully*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                }
-
-                failure {
-                    slackSend channel: '#jenkins-pipelines' ,color: "danger", message: "❌ *Building and Pushing Docker Image Failed*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                }
-            }
+      post {
+        success {
+          slackSend channel: '#jenkins-pipelines', color: "good", message: "✅ *Building and Pushing Docker Image Successfully*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        }
+        failure {
+          slackSend channel: '#jenkins-pipelines', color: "danger", message: "❌ *Building and Pushing Docker Image Failed*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        }
+      }
     }
 
     stage('Run Ansible Playbook') {
       steps {
-          dir('ansible') {
-             sh 'ansible-playbook deploy.yaml'
-         }
-       }
+        dir('ansible') {
+          sh 'ansible-playbook deploy.yaml'
+        }
+      }
       post {
-                
-                success {
-                    slackSend channel: '#jenkins-pipelines' ,color: "good", message: "✅ *Ansible playbook run Successfully*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                }
-
-                failure {
-                    slackSend channel: '#jenkins-pipelines' ,color: "danger", message: "❌ *Ansible playbook running Failed*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                }
-            }
+        success {
+          slackSend channel: '#jenkins-pipelines', color: "good", message: "✅ *Ansible playbook run Successfully*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        }
+        failure {
+          slackSend channel: '#jenkins-pipelines', color: "danger", message: "❌ *Ansible playbook running Failed*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        }
+      }
     }
 
     stage('Print Load Balancer DNS') {
@@ -84,13 +78,14 @@ pipeline {
           def dns = tfOutput['app-dns'].value
           echo "App is running at: ${dns}"
         }
+      }
+      post {
         success {
-                    slackSend channel: '#jenkins-pipelines' ,color: "good", message: "✅ *your pipeline running Successfully and your dns is *: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                }
-
-                failure {
-                    slackSend channel: '#jenkins-pipelines' ,color: "danger", message: "❌ *Ansible playbook running Failed*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                }
+          slackSend channel: '#jenkins-pipelines', color: "good", message: "✅ *your pipeline running Successfully and your dns is *: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        }
+        failure {
+          slackSend channel: '#jenkins-pipelines', color: "danger", message: "❌ *Ansible playbook running Failed*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        }
       }
     }
   }
