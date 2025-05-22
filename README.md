@@ -137,6 +137,14 @@ java -jar agent.jar -url http://3.85.128.151:8080/ -secret 025caeda5d0d510e31237
   ![pipeline](./images/pipeline.png)
 
 ## Step 6: Push Changes on Github & Trigger Pipeline
+- pushing the code 
+ ![git push](./images/push.png)
+
+- the pipeline output
+ ![git push](./images/pipeline-result.png)
+
+## Step 7: Verify pipeline stages on slack
+
 
 ## 🧑‍💻 Author
 
