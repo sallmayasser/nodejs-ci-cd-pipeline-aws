@@ -1,0 +1,7 @@
+terraform/.terraform/
+.terraform*
+mykey*
+gitignore
+scripts/tf-output.json
+scripts/nodes-config
+myinfra.drawio
