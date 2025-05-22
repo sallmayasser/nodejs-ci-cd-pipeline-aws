@@ -13,14 +13,14 @@
 - name: Add ubuntu user to Docker group
   user:
     name: ubuntu
-    group: docker
+    groups: docker
     append: yes
 
 - name: Ensure pip is installed
   apt:
     name: python3-pip
     state: present
- 
+
 - name: Install Docker SDK for Python
   pip:
     name: docker
@@ -31,4 +31,3 @@
     name: docker
     state: started
     enabled: yes
- 

@@ -23,6 +23,7 @@
   docker_container:
     name: node-app
     state: absent
+    container_default_behavior: compatibility
   ignore_errors: yes
 
 - name: Run new container from updated image

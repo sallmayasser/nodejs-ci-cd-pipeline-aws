@@ -21,7 +21,7 @@ pipeline {
           REDIS_PORT: "${tfOutput['redis-endpoint'].value[0].port}"
           """.stripIndent()
 
-          writeFile file: "roles/Deploy_app/vars/main.yaml", text: varsContent
+          writeFile file: "ansible/Deploy_app/vars/main.yaml", text: varsContent
         }
       }
        post {
@@ -58,7 +58,7 @@ pipeline {
                 }
             }
     }
-    
+
     stage('Run Ansible Playbook') {
       steps {
           dir('ansible') {
