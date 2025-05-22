@@ -7,9 +7,9 @@ HOSTS_FILE="../ansible/inventory"
 bastion_ip=$(jq -r '.["bastion-ip"].value' "$TF_OUTPUT_FILE")
 
 # Start writing the hosts file
+# [bastion]
+# bastion ansible_host=bastion
 cat <<EOF > "$HOSTS_FILE"
-[bastion]
-$bastion_ip
 
 [jenkins_slaves]
 slave1  ansible_host=jenkins-slave 

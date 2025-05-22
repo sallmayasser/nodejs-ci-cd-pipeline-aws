@@ -6,7 +6,7 @@
       changed_when: false
 
     - name: Remove old node-app image if exists
-      command: docker image rm node-app
+      command: docker image rm {{ image_name }}:latest
       ignore_errors: yes
 
     - name: Pull latest node-app image

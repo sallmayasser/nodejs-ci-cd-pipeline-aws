@@ -33,31 +33,6 @@ The Node.js app is deployed on a private EC2 instance and is accessed publicly t
 
 ---
 
-## 🧱 Architecture
-
-```text
-       +-------------+      SSH       +-----------------+
-       |   DevOps    |--------------->|    Bastion Host |
-       +-------------+                +--------+--------+
-                                             |
-                                             | (Private IP SSH)
-                                             v
-                                   +---------+---------------+
-                                   |    EC2 (Jenkins Slave)  |
-                                   |  - Node.js App          |
-                                   +---------+---------------+
-                                             |
-                                             v
-                                   +----------+----------+
-                                   |   RDS / Redis       |
-                                   +---------------------+
-
-                       +----------------------------+
-                       |  Application Load Balancer |
-                       |  (Public Access on Port 80)|
-                       +----------------------------+
-```
-
 ## infrastructure
 
 ![infrastructure image ](./images/infra.png)
@@ -120,8 +95,8 @@ Get the agent setup script from: Manage Jenkins --> Nodes --> New Node:
 Then on the Jenkins slave
 
 ```
-curl -sO http://3.85.128.151:8080/jnlpJars/agent.jar
-java -jar agent.jar -url http://3.85.128.151:8080/ -secret 025caeda5d0d510e3123754da8d357ea2fc96b6df39c93cfa79b23d5200477b4 -name "aws-slave" -webSocket -workDir "/home/ubuntu/jenkins"
+curl -sO http://<Bastion host ip>:8080/jnlpJars/agent.jar
+java -jar agent.jar -url http://<Bastion host ip>:8080/ -secret 025caeda5d0d510e3123754da8d357ea2fc96b6df39c93cfa79b23d5200477b4 -name "aws-slave" -webSocket -workDir "/home/ubuntu/jenkins"
 ```
 
 ![Dashboard](./images/after-node-connected.png)

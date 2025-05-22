@@ -59,7 +59,7 @@ module "private-sg" {
   ingress_rules = {
     http = {
       cidr_ipv4                    = null
-      referenced_security_group_id = module.public-sg.sg_id
+      referenced_security_group_id = module.alb-sg.sg_id
       from_port                    = 80
       ip_protocol                  = "tcp"
       to_port                      = 80
@@ -143,18 +143,6 @@ module "node-app-2" {
     Name = "App server 2"
   }
 }
-
-#/////////////////////// ssh-configration //////////////////////
-# resource "null_resource" "ssh-config" {
-#   triggers = {
-#     bastion-ip = module.Bastion-host.public_ip
-#     slave-ip   = module.jenkins-slave.private_ip
-#   }
-#   provisioner "local-exec" {
-#     command = "../scripts/ssh-config.sh"
-#   }
-#   depends_on = [module.Bastion-host, module.jenkins-slave]
-# }
 
 #  ------------------------------------------
 # |                                          | 
