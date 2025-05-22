@@ -1,0 +1,40 @@
+---
+- name: Ensure community.docker collection is installed
+  command: ansible-galaxy collection install community.docker
+  args:
+    creates: ~/.ansible/collections/ansible_collections/community/docker
+  run_once: true
+
+- name: Remove old node-app image if exists
+  docker_image:
+    name: node-app
+    state: absent
+  ignore_errors: yes
+
+- name: Pull latest node-app image from registry
+  docker_image:
+    name: salmayasser5/pipeline-node-app
+    source: pull
+    tag: latest
+
+- name: Stop and remove old container if it exists
+  docker_container:
+    name: node-app
+    state: absent
+  ignore_errors: yes
+
+- name: Run new container from updated image
+  docker_container:
+    name: node-app
+    image: salmayasser5/pipeline-node-app
+    state: started
+    restart_policy: always
+    ports:
+      - "80:3000"
+    env:
+      RDS_HOSTNAME: "{{ RDS_HOSTNAME }}"
+      RDS_USERNAME: "{{ RDS_USERNAME }}"
+      RDS_PASSWORD: "{{ RDS_PASSWORD }}"
+      RDS_PORT: "{{ RDS_PORT }}"
+      REDIS_HOSTNAME: "{{ REDIS_HOSTNAME }}"
+      REDIS_PORT: "{{ REDIS_PORT }}"

@@ -1,0 +1,66 @@
+---
+# tasks file for Jenkins_slave
+
+- name: Update Ubuntu server
+  apt:
+    update_cache: yes
+
+- name: Ensure .ssh directory exists for user
+  file:
+    path: "/home/ubuntu/.ssh"
+    state: directory
+    mode: "0700"
+    owner: ubuntu
+    group: ubuntu
+
+- name: Copy the SSH private key to the slave host
+  copy:
+    src: "{{ playbook_dir }}/../mykey"
+    dest: "/home/ubuntu/.ssh/mykey"
+    mode: "0600"
+    owner: ubuntu
+    group: ubuntu
+
+- name: Create jenkins directory
+  file:
+    path: "/home/ubuntu/jenkins"
+    state: directory
+    mode: "0755"
+    owner: ubuntu
+    group: ubuntu
+
+- name: Install OpenJDK
+  apt:
+    name: openjdk-17-jdk
+    state: present
+
+- name: Install Docker
+  apt:
+    name: docker.io
+    state: present
+
+- name: Install Ansible 
+  apt:
+    name: ansible
+    state: present
+
+- name: Add Jenkins user to Docker group
+  user:
+    name: jenkins
+    groups: docker
+    append: yes
+
+
+- name: Start and enable Docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Copy Terraform output to remote host
+  copy:
+    src: "{{ playbook_dir }}/../scripts/tf-output.json"
+    dest: "/home/ubuntu/tf-output.json"
+    mode: "0644"
+    owner: ubuntu
+    group: ubuntu

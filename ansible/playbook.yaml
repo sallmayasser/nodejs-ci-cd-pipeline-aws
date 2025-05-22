@@ -1,0 +1,5 @@
+- name: Configure Jenkins Slave Machines
+  hosts: jenkins_slaves
+  gather_facts: true
+  roles:
+    - jenkins_slave

@@ -1,0 +1,7 @@
+- name: Deploy Node.js Application
+  hosts: node_apps
+  gather_facts: true
+  roles:
+    - node_apps
+    - Deploy_app
+    
