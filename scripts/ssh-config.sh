@@ -6,15 +6,19 @@ NODE_APP_1=$(terraform output -raw node1-ip)
 NODE_APP_2=$(terraform output -raw node2-ip)
 
 SSH_CONFIG="$HOME/.ssh/config"
-NODE_SSH_CONFIG="./nodes-config"
+NODE_SSH_CONFIG="../scripts/nodes-config"
 
-# Append all hosts to ~/.ssh/config
-echo "
+
+BASTION_BLOCK="
 Host bastion
     HostName $BASTION_IP
     User ubuntu
     IdentityFile ~/.ssh/mykey
-" >>"$SSH_CONFIG"
+"
+
+echo "$BASTION_BLOCK" >>"$SSH_CONFIG"
+echo "$BASTION_BLOCK" >>"$NODE_SSH_CONFIG"
+
 
 echo "
 Host jenkins-slave
@@ -24,7 +28,9 @@ Host jenkins-slave
     ProxyJump bastion
 " >>"$SSH_CONFIG"
 
+
 # add the node server in separate file to run it on jenkins slave
+
 echo "
 Host node1
     HostName $NODE_APP_1

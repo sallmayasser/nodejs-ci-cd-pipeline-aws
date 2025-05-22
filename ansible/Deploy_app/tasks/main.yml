@@ -3,7 +3,9 @@
   command: ansible-galaxy collection install community.docker
   args:
     creates: ~/.ansible/collections/ansible_collections/community/docker
+  delegate_to: localhost
   run_once: true
+
 
 - name: Remove old node-app image if exists
   docker_image:

@@ -58,24 +58,7 @@ pipeline {
                 }
             }
     }
-     stage('Configure the ~/.ssh/config file') {
-      steps {
-          
-         }
-       }
-      post {
-                
-                success {
-                    slackSend channel: '#jenkins-pipelines' ,color: "good", message: "✅ *the script run Successfully*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                }
-
-                failure {
-                    slackSend channel: '#jenkins-pipelines' ,color: "danger", message: "❌ *the script Failed*: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
-                }
-            }
-    }
-
-
+    
     stage('Run Ansible Playbook') {
       steps {
           dir('ansible') {
