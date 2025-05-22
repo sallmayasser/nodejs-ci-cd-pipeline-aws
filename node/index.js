@@ -1,25 +1,27 @@
 const express = require("express");
-var mysql = require("mysql");
 const app = express();
 const port = 3000;
 
-var connection = mysql.createConnection({
+const mysql = require("mysql");
+const pool = mysql.createPool({
   host: process.env.RDS_HOSTNAME,
-  port: process.env.RDS_PORT,
   user: process.env.RDS_USERNAME,
   password: process.env.RDS_PASSWORD,
+  port: process.env.RDS_PORT,
+  ssl: true,
+  connectionLimit: 10, // adjust as needed
 });
+
 app.get("/db", (req, res) => {
-  connection.connect(function (err) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       res.send("db connection failed");
       console.error("Database connection failed: " + err.stack);
       return;
     }
-    res.send("db connection successful");
+    res.send("db connection successful finished pipeline");
     console.log("Connected to database.");
-
-    connection.end();
+    connection.release(); // release back to the pool
   });
 });
 

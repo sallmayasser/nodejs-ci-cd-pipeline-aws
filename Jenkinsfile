@@ -21,7 +21,7 @@ pipeline {
           REDIS_PORT: "${tfOutput['redis-endpoint'].value[0].port}"
           """.stripIndent()
 
-          writeFile file: "ansible/Deploy_app/vars/main.yaml", text: varsContent
+          writeFile file: "ansible/Deploy_app/vars/main.yml", text: varsContent
         }
       }
        post {

@@ -6,7 +6,6 @@
   delegate_to: localhost
   run_once: true
 
-
 - name: Remove old node-app image if exists
   docker_image:
     name: node-app
@@ -31,6 +30,7 @@
     name: node-app
     image: salmayasser5/pipeline-node-app
     state: started
+    container_default_behavior: compatibility
     restart_policy: always
     ports:
       - "80:3000"
