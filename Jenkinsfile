@@ -19,6 +19,7 @@ pipeline {
           RDS_PASSWORD: "${env.DB_PASSWORD}"
           REDIS_HOSTNAME: "${tfOutput['redis-endpoint'].value[0].address}"
           REDIS_PORT: "${tfOutput['redis-endpoint'].value[0].port}"
+          image_name: salmayasser5/pipeline-node-app
           """.stripIndent()
 
           writeFile file: "ansible/Deploy_app/vars/main.yml", text: varsContent
@@ -37,12 +38,12 @@ pipeline {
     stage('Build and Push Docker Image') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-          sh '''
+         dir('node') {sh '''
             echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin
             sudo docker build -t pipeline-node-app .
             sudo docker tag pipeline-node-app salmayasser5/pipeline-node-app:latest
             sudo docker image push salmayasser5/pipeline-node-app:latest
-          '''
+          '''}
         }
       }
       post {

@@ -1,43 +1,35 @@
----
-- name: Ensure community.docker collection is installed
-  command: ansible-galaxy collection install community.docker
-  args:
-    creates: ~/.ansible/collections/ansible_collections/community/docker
-  delegate_to: localhost
-  run_once: true
 
-- name: Remove old node-app image if exists
-  docker_image:
-    name: node-app
-    state: absent
-  ignore_errors: yes
+    - name: Ensure Docker is installed
+      command: docker --version
+      register: docker_installed
+      failed_when: docker_installed.rc != 0
+      changed_when: false
 
-- name: Pull latest node-app image from registry
-  docker_image:
-    name: salmayasser5/pipeline-node-app
-    source: pull
-    tag: latest
+    - name: Remove old node-app image if exists
+      command: docker image rm node-app
+      ignore_errors: yes
 
-- name: Stop and remove old container if it exists
-  docker_container:
-    name: node-app
-    state: absent
-    container_default_behavior: compatibility
-  ignore_errors: yes
+    - name: Pull latest node-app image
+      command: docker pull {{ image_name }}:latest
 
-- name: Run new container from updated image
-  docker_container:
-    name: node-app
-    image: salmayasser5/pipeline-node-app
-    state: started
-    container_default_behavior: compatibility
-    restart_policy: always
-    ports:
-      - "80:3000"
-    env:
-      RDS_HOSTNAME: "{{ RDS_HOSTNAME }}"
-      RDS_USERNAME: "{{ RDS_USERNAME }}"
-      RDS_PASSWORD: "{{ RDS_PASSWORD }}"
-      RDS_PORT: "{{ RDS_PORT }}"
-      REDIS_HOSTNAME: "{{ REDIS_HOSTNAME }}"
-      REDIS_PORT: "{{ REDIS_PORT }}"
+    - name: Stop running container (if exists)
+      command: docker stop node-app
+      ignore_errors: yes
+
+    - name: Remove existing container (if exists)
+      command: docker rm node-app
+      ignore_errors: yes
+
+    - name: Run new container from updated image
+      command: >
+        docker run -d
+        --name node-app
+        -p 80:3000
+        --restart always
+        -e RDS_HOSTNAME={{ RDS_HOSTNAME }}
+        -e RDS_USERNAME={{ RDS_USERNAME }}
+        -e RDS_PASSWORD={{ RDS_PASSWORD }}
+        -e RDS_PORT={{ RDS_PORT }}
+        -e REDIS_HOSTNAME={{ REDIS_HOSTNAME }}
+        -e REDIS_PORT={{ REDIS_PORT }}
+        {{ image_name }}:latest
