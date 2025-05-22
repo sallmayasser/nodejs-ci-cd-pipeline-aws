@@ -1,7 +1,5 @@
 #!/bin/bash
 
-terraform output -json > tf-output.json
-
 TF_OUTPUT_FILE="tf-output.json"
 HOSTS_FILE="../ansible/inventory"
 

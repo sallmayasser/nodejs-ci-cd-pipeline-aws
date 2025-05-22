@@ -21,6 +21,14 @@
     owner: ubuntu
     group: ubuntu
 
+- name: Copy the SSH config file to the slave host
+  copy:
+    src: "{{ playbook_dir }}/../scripts/nodes-config"
+    dest: "/home/ubuntu/.ssh/config"
+    mode: "0600"
+    owner: ubuntu
+    group: ubuntu
+
 - name: Create jenkins directory
   file:
     path: "/home/ubuntu/jenkins"
