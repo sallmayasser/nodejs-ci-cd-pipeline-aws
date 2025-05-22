@@ -69,7 +69,7 @@ The Node.js app is deployed on a private EC2 instance and is accessed publicly t
 2-Clone your fork:
 
 ```
-git clone https://github.com/<your-username>/nodejs-ci-cd-pipeline-aws.git
+git clone https://github.com/sallmayasser/nodejs-ci-cd-pipeline-aws.git
 cd jenkins-devops-project
 ```
 
@@ -141,7 +141,7 @@ java -jar agent.jar -url http://3.85.128.151:8080/ -secret 025caeda5d0d510e31237
  ![git push](./images/push.png)
 
 - the pipeline output
- ![git push](./images/pipeline-result.png)
+ ![pipeline result](./images/pipeline-result.png)
 
 ## Step 7: Verify pipeline stages on slack
 

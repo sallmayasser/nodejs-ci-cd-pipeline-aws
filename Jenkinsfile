@@ -40,9 +40,10 @@ pipeline {
       steps {
         withCredentials([usernamePassword(credentialsId: 'Docker-hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
           sh '''
-            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-            docker build -t salmayasser5/pipeline-node-app:latest .
-            docker push salmayasser5/pipeline-node-app:latest
+            echo "$DOCKER_PASS" | sudo docker login -u "$DOCKER_USER" --password-stdin
+            sudo docker build -t pipeline-node-app .
+            sudo docker tag pipeline-node-app salmayasser5/pipeline-node-app:latest
+            sudo docker image push salmayasser5/pipeline-node-app:latest
           '''
         }
       }
@@ -60,8 +61,10 @@ pipeline {
 
     stage('Run Ansible Playbook') {
       steps {
-        sh "ansible-playbook deploy.yaml"
-      }
+          dir('ansible') {
+             sh 'ansible-playbook deploy.yaml'
+         }
+       }
       post {
                 
                 success {
