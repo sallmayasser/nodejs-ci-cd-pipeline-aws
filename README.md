@@ -2,7 +2,7 @@
 
 **End-to-End DevOps Pipeline for Scalable Node.js Application with Jenkins, RDS, Redis, and Load Balancer on AWS**
 
-## 📌 Project Describtion
+## 📌 Project Description
 
 This project showcases a complete DevOps pipeline to provision, configure, and deploy a containerized Node.js application on AWS, using fully automated Infrastructure as Code and configuration management tools.
 
